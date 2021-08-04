@@ -95,7 +95,7 @@ void getFile(char** cmd, int size){
                 printf("\t\033[0;35m%d:\033[0m %s", lineNumber+1, line);
                 lineNumber++;
                 if (lineNumber % maxLines == 0){
-                    // Wait for keyboard input
+                    // Reset, wait for keyboard input
                     getch();
                 }
             }
