@@ -1,7 +1,10 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
+// Function prototypes
+
 void runShell(void);
+int prefixCalc(int*, int, char**);
 void calcExpression(char**, int);
 void getLocalTime(void);
 void getPath(void);
