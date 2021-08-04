@@ -24,7 +24,7 @@ void getPath(void){
 
 void getSys(void){
     // Check operating system
-    char os[MAX_SIZE], cpu[MAX_SIZE];
+    char os[MAX_SIZE];
     #ifdef _WIN32
         strcpy(os, "Windows");
     #elif __APPLE__
@@ -36,10 +36,8 @@ void getSys(void){
     #else
         strcpy(os, "Unable to detect OS");
     #endif 
-    // Check CPU
-    
-    // Print results
-    printf("\n\t\033[0;35mOperating System:\033[0m %s\n\t\033[0;35mSystem CPU:\033[0m %s\n", os, cpu);
+    printf("\n\t\033[0;35mOperating System:\033[0m %s\n\t\033[0;35mSystem CPU:\033[0m ", os);
+    system("grep -m 1 'model name' /proc/cpuinfo");
 }   
 
 void putFile(char** cmd, int size){
