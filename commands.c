@@ -1,5 +1,6 @@
 #include "includes.h"
 
+// Recursive call to calculate prefix -> infix expression
 int prefixCalc(int* curr_index, int last_index, char** cmd){
     // Ensure still in calculation
     if (*curr_index > last_index){
@@ -26,6 +27,7 @@ int prefixCalc(int* curr_index, int last_index, char** cmd){
     }
 }
 
+// Called from shell, gets value from prefixCalc function
 void calcExpression(char** cmd, int size){
     if (size > 1){
         int curr_pos = 1;
@@ -48,6 +50,7 @@ void getLocalTime(void){
     printf("\n\t\033[0;35mDate and time:\033[0m %s", asctime(ti));
 }
 
+// Gets current working directory and prints to console
 void getPath(void){
     // Use linux cwd and char array as buffer to locate current path
     char cwd[MAX_SIZE];
@@ -55,33 +58,31 @@ void getPath(void){
     printf("\n\t\033[0;35mCurrent path:\033[0m %s\n", cwd);
 }
 
+// Get system information
 void getSys(void){
-    // Check operating system
-    char os[MAX_SIZE];
-    #ifdef _WIN32
-        strcpy(os, "Windows");
-    #elif __APPLE__
-        strcpy(os, "MacOS");
-    #elif __linux__
-        strcpy(os, "Linux");
-    #elif __unix__
-        strcpy(os, "Other Unix System");
-    #else
-        strcpy(os, "Unable to detect OS");
-    #endif 
-    // Print OS and CPU
-    printf("\n\t\033[0;35mOperating System:\033[0m %s\n\t\033[0;35mSystem CPU:\033[0m ", os);
-    system("grep -m 1 'model name' /proc/cpuinfo");
+    // Get OS version
+    printf("\n\t\033[0;35mOperating System:\033[0m ");
+    system("cat /proc/version");
+    // Get CPU info
+    printf("\t\033[0;35mSystem CPU:\033[0m ");
+    system("grep -m 1 'model name' /proc/cpuinfo"); // Grep finds model name of CPU and prints
 }
 
+// Push files into new directory
 void putFile(char** cmd, int size){
+    // Check size of command - at least 3 arguments
+    if (size > 2){
+        
+    } else {
 
+    }
 }
 
+// Get file contents and dump onto shell
 void getFile(char** cmd, int size){
     // Check command size
     if (size == 2){
-        FILE *fp = fopen(cmd[1], "r"); // Open in read mode
+        FILE* fp = fopen(cmd[1], "r"); // Open in read mode
         int maxLines = 40; // Number of lines given on a dump
         // Check if file is found
         if (fp != NULL){ 
@@ -104,7 +105,7 @@ void getFile(char** cmd, int size){
             printf("\n\n\t\033[0;35mEnd of File.\033[0m \n");
         } else {
             // File not found error
-            printf("\n\t\033[0;31mError:\033[0m Unable to find file. \n");
+            printf("\n\t\033[0;31mError:\033[0m File not found in current directory. \n");
         }
         // Close file pointer
         fclose(fp);
