@@ -72,9 +72,67 @@ void getSys(void){
 void putFile(char** cmd, int size){
     // Check size of command - at least 3 arguments
     if (size > 2){
-        
+        // Check if force flag is set
+        bool force = false;
+        if (strcmp(cmd[size-1], "-f") == 0){
+            force = true;
+        }
+        // Check if dirname exists within current path
+        char dirname[MAX_SIZE];
+        strcpy(dirname, cmd[1]);
+        DIR* dir = opendir(dirname);
+        struct dirent* pDir;
+        if (dir){
+            // Directory exists
+            if (force){
+                // Remove existing files
+                while ((pDir = readdir(dir)) != NULL){
+                    // Get each filename
+                    char* filename = pDir->d_name;
+                    // Check file name, exclude "." and ".."
+                    if (strcmp(filename, ".") != 0 && strcmp(filename, "..") != 0){
+                        // Adjust filename for directory prefix
+                        char fname[] = "";
+                        strcat(fname, dirname);
+                        strcat(fname, "/");
+                        strcat(fname, filename);
+                        // Check if file has been removed successfully
+                        if (remove(fname) == 0){
+                            printf("\n\t\033[0;35mRemoved File: \033[0m %s", filename);
+                        } else {
+                            printf("\n\t\033[0;35mCannot Remove File: \033[0m %s", filename);
+                        }
+                    }
+                }
+            } else {
+                // Directory exists and force not flagged
+                printf("\n\t\033[0;31mError:\033[0m Directory already exists. \n");
+                return;
+            }
+        } else {
+            // Create new directory
+            mkdir(dirname);
+        }
+        // Copy files into new directory
+        // Find max file argument in cmd
+        int maxArg = 0;
+        if (force){
+            maxArg = size-1;
+        } else {
+            maxArg = size;
+        }
+        // Push each file into new directory
+        for (int i = 2; i < maxArg; i++){
+            // Get filename from command argument
+            char* filename = cmd[i];
+            // Copy file contents, store in new file
+            // TODO from here ***
+        }
+        // Close directory
+        closedir(dir);
     } else {
-
+        // Print error, not enough arguments
+        printf("\n\t\033[0;31mError:\033[0m Specify more arguments (dirname, filenames). \n");
     }
 }
 

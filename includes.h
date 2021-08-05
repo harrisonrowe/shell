@@ -5,6 +5,9 @@
 #include <time.h>
 #include <io.h>
 #include <conio.h>
+#include <stdbool.h>
+#include <dirent.h>
+#include <unistd.h>
 
 // Include paths
 #include "functions.h"
