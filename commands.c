@@ -85,6 +85,7 @@ void putFile(char** cmd, int size){
         if (dir){
             // Directory exists
             if (force){
+                printf("\n\t%s\033[0;35m found!\033[0m\n", dirname);
                 // Remove existing files
                 while ((pDir = readdir(dir)) != NULL){
                     // Get each filename
@@ -113,6 +114,7 @@ void putFile(char** cmd, int size){
             // Create new directory
             mkdir(dirname);
         }
+        printf("\n\n\t%s \033[0;35mready. Copying Files... \033[0m\n", dirname);
         // Copy files into new directory
         // Find max file argument in cmd
         int maxArg = 0;
@@ -125,14 +127,39 @@ void putFile(char** cmd, int size){
         for (int i = 2; i < maxArg; i++){
             // Get filename from command argument
             char* filename = cmd[i];
-            // Copy file contents, store in new file
-            // TODO from here ***
+            // Check if file is valid file
+            FILE* readFile = fopen(filename, "r");
+            if (readFile == NULL){
+                // File not found error, continue to next file
+                printf("\n\t\033[0;31mError:\033[0m %s not found.", filename);
+                continue;
+            }
+            // Since file exists, create new file in working directory
+            char fname[] = "";
+            strcat(fname, dirname);
+            strcat(fname, "/");
+            strcat(fname, filename);
+            FILE* writeFile = fopen(fname, "w");
+            // Copy readFile to writeFile line by line file
+            char* line = NULL;
+            size_t length;
+            // While readFile is not EOF
+            while (getline(&line, &length, readFile) != -1){
+                // Write line to writeFile
+                fprintf(writeFile, line);
+            }
+            // File creation message
+            printf("\n\t\033[0;35mCreated File: \033[0m%s", filename);
+            // Close file pointers
+            fclose(readFile);
+            fclose(writeFile);
         }
         // Close directory
         closedir(dir);
+        printf("\n\n\t\033[0;35m%s\033[0m created successfully.\n", dirname);
     } else {
         // Print error, not enough arguments
-        printf("\n\t\033[0;31mError:\033[0m Specify more arguments (dirname, filenames). \n");
+        printf("\n\t\033[0;31mError:\033[0m Specify more arguments (dirname, filenames, -f). \n");
     }
 }
 
