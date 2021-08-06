@@ -1,2 +1,2 @@
-shell: main.c shell.c commands.c
-	gcc -o shell main.c shell.c commands.c
+shell: main.c shell.c shellFunctions.c shellCommands.c 
+	gcc -o shell main.c shell.c shellFunctions.c shellCommands.c

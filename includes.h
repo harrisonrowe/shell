@@ -13,5 +13,4 @@
 #include "functions.h"
 
 // Defintions
-#define _GNU_SOURCE
 #define MAX_SIZE 1024
