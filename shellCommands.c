@@ -65,37 +65,21 @@ void putFile(char** cmd, int size){
     if (size > 2){
         // Check if force flag is set
         bool force = false;
+        int maxArg = size; // Find max file argument in cmd
         if (strcmp(cmd[size-1], "-f") == 0){
             force = true;
+            maxArg--;
         }
         // Check if dirname exists within current path
         char dirname[MAX_SIZE];
         strcpy(dirname, cmd[1]);
         DIR* dir = opendir(dirname);
-        struct dirent* pDir;
         if (dir){
             // Directory exists
             if (force){
                 printf("\n\t%s\033[0;35m found!\033[0m\n", dirname);
                 // Remove existing files
-                while ((pDir = readdir(dir)) != NULL){
-                    // Get each filename
-                    char* filename = pDir->d_name;
-                    // Check file name, exclude "." and ".."
-                    if (strcmp(filename, ".") != 0 && strcmp(filename, "..") != 0){
-                        // Adjust filename for directory prefix
-                        char fname[] = "";
-                        strcat(fname, dirname);
-                        strcat(fname, "/");
-                        strcat(fname, filename);
-                        // Check if file has been removed successfully
-                        if (remove(fname) == 0){
-                            printf("\n\t\033[0;35mRemoved File: \033[0m %s", filename);
-                        } else {
-                            printf("\n\t\033[0;35mCannot Remove File: \033[0m %s", filename);
-                        }
-                    }
-                }
+                removeDirFiles(dir, dirname);
             } else {
                 // Directory exists and force not flagged
                 printf("\n\t\033[0;31mError:\033[0m Directory already exists. \n");
@@ -106,48 +90,14 @@ void putFile(char** cmd, int size){
             mkdir(dirname);
         }
         printf("\n\n\t%s \033[0;35mready. Copying Files... \033[0m\n", dirname);
-        // Copy files into new directory
-        // Find max file argument in cmd
-        int maxArg = 0;
-        if (force){
-            maxArg = size-1;
-        } else {
-            maxArg = size;
-        }
-        // Push each file into new directory
+        // Copy files into new directory by push each file into new directory
         for (int i = 2; i < maxArg; i++){
-            // Get filename from command argument
-            char* filename = cmd[i];
-            // Check if file is valid file
-            FILE* readFile = fopen(filename, "r");
-            if (readFile == NULL){
-                // File not found error, continue to next file
-                printf("\n\t\033[0;31mError:\033[0m %s not found.", filename);
-                continue;
-            }
-            // Since file exists, create new file in working directory
-            char fname[] = "";
-            strcat(fname, dirname);
-            strcat(fname, "/");
-            strcat(fname, filename);
-            FILE* writeFile = fopen(fname, "w");
-            // Copy readFile to writeFile line by line file
-            char* line = NULL;
-            size_t length;
-            // While readFile is not EOF
-            while (getline(&line, &length, readFile) != -1){
-                // Write line to writeFile
-                fprintf(writeFile, line);
-            }
-            // File creation message
-            printf("\n\t\033[0;35mCreated File: \033[0m%s", filename);
-            // Close file pointers
-            fclose(readFile);
-            fclose(writeFile);
+            // Copy file contents, with cmd[i] = filename
+            copyFile(cmd[i], dirname);
         }
         // Close directory
         closedir(dir);
-        printf("\n\n\t\033[0;35m%s\033[0m created successfully.\n", dirname);
+        printf("\n\n\t%s \033[0;35mcreated successfully!\033[0m\n", dirname);
     } else {
         // Print error, not enough arguments
         printf("\n\t\033[0;31mError:\033[0m Specify more arguments (dirname, filenames, -f). \n");

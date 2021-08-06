@@ -14,5 +14,7 @@ void getFile(char**, int);
 // Shell function prototypes
 
 int prefixCalc(int*, int, char**);
+void removeDirFiles(DIR*, char*);
+void copyFile(char*, char*);
 
 #endif
