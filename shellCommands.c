@@ -21,7 +21,6 @@ void getLocalTime(void){
     struct tm *ti;
     time(&currentTime);
     ti = localtime(&currentTime);
-    // ti->tm_hour += 9; // Offset cygwin default time
     // Print output
     printf("\n\t\033[0;35mDate and time:\033[0m %s", asctime(ti));
 }
@@ -65,10 +64,9 @@ void putFile(char** cmd, int size){
     if (size > 2){
         // Check if force flag is set
         bool force = false;
-        int maxArg = size; // Find max file argument in cmd
         if (strcmp(cmd[size-1], "-f") == 0){
             force = true;
-            maxArg--;
+            size--;
         }
         // Check if dirname exists within current path
         char dirname[MAX_SIZE];
@@ -91,8 +89,8 @@ void putFile(char** cmd, int size){
         }
         printf("\n\n\t%s \033[0;35mready. Copying Files... \033[0m\n", dirname);
         // Copy files into new directory by push each file into new directory
-        for (int i = 2; i < maxArg; i++){
-            // Copy file contents, with cmd[i] = filename
+        for (int i = 2; i < size; i++){
+            // Copy file contents, where cmd[i] = filename
             copyFile(cmd[i], dirname);
         }
         // Close directory

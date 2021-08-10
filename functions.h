@@ -16,5 +16,6 @@ void getFile(char**, int);
 int prefixCalc(int*, int, char**);
 void removeDirFiles(DIR*, char*);
 void copyFile(char*, char*);
+void addDirPrefix(char*, char*, char*);
 
 #endif
